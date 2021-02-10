@@ -1,2 +1,3 @@
-# flake-aquadiva
-Nix flake for aquadiva.uni-jena.de
+# AquaDiva Software Flake
+
+Software to support [AquaDiva](aquadiva.uni-jena.de)
