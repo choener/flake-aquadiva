@@ -43,11 +43,24 @@
         "type": "github"
       }
     },
+    "poseidon-src": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-46/n9m0+iIO1uUA5ZZLpdyYUthG3IIUY4J0w0rSQ/pg=",
+        "type": "tarball",
+        "url": "https://github.com/hoelzer/poseidon/archive/v1.0.1.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://github.com/hoelzer/poseidon/archive/v1.0.1.tar.gz"
+      }
+    },
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
         "nextflow-src": "nextflow-src",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "poseidon-src": "poseidon-src"
       }
     }
   },

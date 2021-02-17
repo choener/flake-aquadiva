@@ -8,9 +8,14 @@
       url = "https://github.com/nextflow-io/nextflow/archive/v20.10.0.tar.gz";
       flake = false;
     };
+    poseidon-src = {
+      url = "https://github.com/hoelzer/poseidon/archive/v1.0.1.tar.gz";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, flake-utils, nextflow-src }: let
+  outputs = { self, nixpkgs, flake-utils
+            , nextflow-src, poseidon-src }: let
 
     # each system
     eachSystem = system: let
@@ -19,8 +24,9 @@
       # fhs with things we need
       fhs = pkgs.buildFHSUserEnv {
         name = "fhs";
-        targetPkgs = p: [ p.jdk14 nextflow ];
+        targetPkgs = p: [ p.jdk14 nextflow poseidon ];
       };
+      ## TODO nextflow should actually be embedded within an FHS
       nextflow = pkgs.stdenv.mkDerivation {
         name = "nextflow";
         src = nextflow-src;
@@ -31,6 +37,20 @@
           cp -r nextflow modules $out
           cd $out/bin
           ln -s ../nextflow
+        '';
+      };
+      # TODO should depend on nextflow
+      poseidon = pkgs.stdenv.mkDerivation {
+        name = "poseidon";
+        src = poseidon-src;
+        configurePhase = "true";
+        buildPhase = "true";
+        installPhase = ''
+          mkdir -p $out/bin
+          rm .gitignore
+          cp -r . $out
+          cd $out/bin
+          ln -s ../poseidon.nf poseidon
         '';
       };
 
@@ -46,7 +66,7 @@
       apps.nextflow = { type = "app"; program = "${nextflow}/bin/nextflow"; };
       # by default, we get the @fhs@ environment to play around in.
       defaultApp = apps.fhs;
-      packages = { inherit nextflow; inherit fhs; };
+      packages = { inherit nextflow; inherit poseidon; inherit fhs; };
     }; # eachSystem
 
   in
