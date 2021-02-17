@@ -15,6 +15,18 @@
         "type": "github"
       }
     },
+    "nextflow-src": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-vpx7GcphQLkJmCdQslnuPW1UwkaufHnHJi0oRdXMA2A=",
+        "type": "tarball",
+        "url": "https://github.com/nextflow-io/nextflow/archive/v20.10.0.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://github.com/nextflow-io/nextflow/archive/v20.10.0.tar.gz"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1613208951,
@@ -34,6 +46,7 @@
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
+        "nextflow-src": "nextflow-src",
         "nixpkgs": "nixpkgs"
       }
     }
