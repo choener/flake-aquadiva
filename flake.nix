@@ -15,7 +15,7 @@
   };
 
   outputs = { self, nixpkgs, flake-utils
-            , nextflow-src, poseidon-src }: let
+            , nextflow-src, poseidon-src, bonito-src }: let
 
     # each system
     eachSystem = system: let
@@ -24,7 +24,7 @@
       # fhs with things we need
       fhs = pkgs.buildFHSUserEnv {
         name = "fhs";
-        targetPkgs = p: [ p.jdk14 nextflow poseidon ];
+        targetPkgs = p: [ p.jdk14 nextflow poseidon bonito ];
       };
       ## TODO nextflow should actually be embedded within an FHS
       nextflow = pkgs.stdenv.mkDerivation {
@@ -66,7 +66,8 @@
       apps.nextflow = { type = "app"; program = "${nextflow}/bin/nextflow"; };
       # by default, we get the @fhs@ environment to play around in.
       defaultApp = apps.fhs;
-      packages = { inherit nextflow; inherit poseidon; inherit fhs; };
+      packages = { inherit fhs;
+                   inherit nextflow poseidon; };
     }; # eachSystem
 
   in
