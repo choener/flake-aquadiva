@@ -1,6 +1,7 @@
 { stdenv, fetchurl, lib, addOpenGLRunpath, patchelf, fetchFromGitHub, autoreconfHook
-, python38, python38Packages, poetry2nix
-, which, zlib, bzip2, lzma, cudatoolkit_10_2, cudnn_cudatoolkit_10_2
+, python38, python38Packages, poetry, poetry2nix
+, which, zlib, bzip2, lzma, cudatoolkit_10_2, cudnn_cudatoolkit_10_2, unzip
+, linuxPackages
 }:
 
 let
@@ -19,6 +20,11 @@ let
     };
   };
 
+  model_r10v32 = fetchurl {
+    url = "https://nanoporetech.box.com/shared/static/yesf11tisfrncmod5hj2xtx9kbdveuqt.zip";
+    sha256 = "5dH9TKXGLkS3NVc+J9z3BTKWQYaHVN4DzSaKbotUv00=";
+  };
+
   parasail = stdenv.mkDerivation rec {
     name = "parasail";
     version = "2.4.3";
@@ -34,16 +40,26 @@ let
 
 in
 
+# TODO download model files and provide to bonito
 poetry2nix.mkPoetryApplication {
   projectDir = ./.;
   src = bonitosrc.src;
-  buildPhase = ''
-    pwd
-    ls -alh
-    pip list
-    pip install .
+  # do not download model files here
+  preBuild = ''
+    substituteInPlace setup.py \
+      --replace "'install': download_latest_model," ""
+  '';
+  preFixup = ''
+    makeWrapperArgs+="--prefix PATH : ${lib.makeLibraryPath [ parasail ]} "
+    makeWrapperArgs+="--prefix LD_LIBRARY_PATH : '/run/opengl-driver/lib' "
+  '';
+  postFixup = ''
+    mkdir $out/models
+    unzip ${model_r10v32} -d $out/models
   '';
   python = pP.python;
+  nativeBuildInputs = [ poetry unzip ];
+
   overrides = poetry2nix.overrides.withDefaults (self: super: {
     mappy = super.mappy.overridePythonAttrs (old: { propagatedBuildInputs = old.propagatedBuildInputs ++ [ zlib ]; });
     # TODO might have to set a dynamic lib path to parasail C
