@@ -1,17 +1,5 @@
 {
   "nodes": {
-    "bonito-src": {
-      "flake": false,
-      "locked": {
-        "narHash": "sha256-YyexXzvkICD1cWO4U73QRYJUoCOMncHHUDglByqSGQ0=",
-        "type": "tarball",
-        "url": "https://github.com/nanoporetech/bonito/archive/v0.3.5.tar.gz"
-      },
-      "original": {
-        "type": "tarball",
-        "url": "https://github.com/nanoporetech/bonito/archive/v0.3.5.tar.gz"
-      }
-    },
     "flake-utils": {
       "locked": {
         "lastModified": 1610051610,
@@ -69,7 +57,6 @@
     },
     "root": {
       "inputs": {
-        "bonito-src": "bonito-src",
         "flake-utils": "flake-utils",
         "nextflow-src": "nextflow-src",
         "nixpkgs": "nixpkgs",

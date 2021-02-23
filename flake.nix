@@ -15,12 +15,15 @@
   };
 
   outputs = { self, nixpkgs, flake-utils
-            , nextflow-src, poseidon-src, bonito-src }: let
+            , nextflow-src, poseidon-src }: let
 
     # each system
     eachSystem = system: let
-
-      pkgs = import nixpkgs { inherit system; };
+      config = { allowUnfree = true;};
+      pkgs = import nixpkgs {
+        inherit system;
+        inherit config;
+      };
       # fhs with things we need
       fhs = pkgs.buildFHSUserEnv {
         name = "fhs";
@@ -53,6 +56,7 @@
           ln -s ../poseidon.nf poseidon
         '';
       };
+      bonito = pkgs.callPackage ./ont-bonito {};
 
     in rec {
       devShell = pkgs.stdenv.mkDerivation {
@@ -67,7 +71,7 @@
       # by default, we get the @fhs@ environment to play around in.
       defaultApp = apps.fhs;
       packages = { inherit fhs;
-                   inherit nextflow poseidon; };
+                   inherit nextflow poseidon bonito; };
     }; # eachSystem
 
   in
