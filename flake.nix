@@ -12,10 +12,14 @@
       url = "https://github.com/hoelzer/poseidon/archive/v1.0.1.tar.gz";
       flake = false;
     };
+    viennarna-src = {
+      url = "https://www.tbi.univie.ac.at/RNA/download/sourcecode/2_4_x/ViennaRNA-2.4.17.tar.gz";
+      flake = false;
+    };
   };
 
   outputs = { self, nixpkgs, flake-utils
-            , nextflow-src, poseidon-src }: let
+            , nextflow-src, poseidon-src, viennarna-src }: let
 
     # each system
     eachSystem = system: let
@@ -23,11 +27,12 @@
       pkgs = import nixpkgs {
         inherit system;
         inherit config;
+        overlays = [ self.overlay ];
       };
       # fhs with things we need
       fhs = pkgs.buildFHSUserEnv {
         name = "fhs";
-        targetPkgs = p: [ p.jdk14 nextflow poseidon bonito ];
+        targetPkgs = p: [ p.jdk14 nextflow poseidon bonito p.ViennaRNA ];
       };
       ## TODO nextflow should actually be embedded within an FHS
       nextflow = pkgs.stdenv.mkDerivation {
@@ -71,9 +76,11 @@
       # by default, we get the @fhs@ environment to play around in.
       defaultApp = apps.fhs;
       packages = { inherit fhs;
-                   inherit nextflow poseidon bonito; };
+                   inherit nextflow poseidon bonito; inherit (pkgs) ViennaRNA; };
     }; # eachSystem
 
   in
-    flake-utils.lib.eachDefaultSystem eachSystem;
+    flake-utils.lib.eachDefaultSystem eachSystem // { overlay = final: prev: {
+      ViennaRNA = final.callPackage ./viennarna { inherit viennarna-src; };
+    };};
 }
