@@ -1,14 +1,12 @@
-{ stdenv, fetchurl, perl
-, viennarna-src }:
+{ lib, stdenv, fetchurl, perl }:
 
 stdenv.mkDerivation rec {
   name = "ViennaRNA";
-  version = "flake";
-  src = viennarna-src;
-  #src = fetchurl {
-  #  url = "https://www.tbi.univie.ac.at/RNA/download/sourcecode/2_4_x/ViennaRNA-${version}.tar.gz";
-  #  sha256 = "";
-  #};
+  version = "2.5.0";
+  src = fetchurl {
+    url = "https://www.tbi.univie.ac.at/RNA/download/sourcecode/2_5_x/ViennaRNA-${version}.tar.gz";
+    sha256 = "sha256-uFVEZQ7jFnQxc+ybMEl8xMVZ8b+49m0WxWP3gK/YwMU=";
+  };
   nativeBuildInputs = [ perl ]; # python2 python3 ];
 
   enableParallelBuilding = true;
@@ -32,7 +30,7 @@ stdenv.mkDerivation rec {
     homepage = https://www.tbi.univie.ac.at/RNA/;
     license = "https://www.tbi.univie.ac.at/RNA/ViennaRNA/doc/html/index.html#license";
     maintainers = [  ];
-    platforms = stdenv.lib.platforms.linux;
+    platforms = lib.platforms.linux;
   };
 }
 
