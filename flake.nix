@@ -2,7 +2,7 @@
   description = "Repository of software to support AquaDiva";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-20.09";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-21.11";
     flake-utils.url = "github:numtide/flake-utils";
     nextflow-src = {
       url = "https://github.com/nextflow-io/nextflow/archive/v20.10.0.tar.gz";
@@ -12,14 +12,10 @@
       url = "https://github.com/hoelzer/poseidon/archive/v1.0.1.tar.gz";
       flake = false;
     };
-    viennarna-src = {
-      url = "https://www.tbi.univie.ac.at/RNA/download/sourcecode/2_4_x/ViennaRNA-2.4.17.tar.gz";
-      flake = false;
-    };
   };
 
   outputs = { self, nixpkgs, flake-utils
-            , nextflow-src, poseidon-src, viennarna-src }: let
+            , nextflow-src, poseidon-src }: let
 
     # each system
     eachSystem = system: let
@@ -73,14 +69,18 @@
       }; # devShell
       apps.fhs = { type = "app"; program = "${fhs}/bin/fhs"; };
       apps.nextflow = { type = "app"; program = "${nextflow}/bin/nextflow"; };
+      apps.RNAfold = { type = "app"; program = "${pkgs.ViennaRNA}/bin/RNAfold"; };
       # by default, we get the @fhs@ environment to play around in.
       defaultApp = apps.fhs;
       packages = { inherit fhs;
-                   inherit nextflow poseidon bonito; inherit (pkgs) ViennaRNA; };
+                   inherit nextflow poseidon bonito;
+                   inherit (pkgs) ViennaRNA Kraken2;
+                 };
     }; # eachSystem
 
   in
     flake-utils.lib.eachDefaultSystem eachSystem // { overlay = final: prev: {
-      ViennaRNA = final.callPackage ./viennarna { inherit viennarna-src; };
+      ViennaRNA = final.callPackage ./viennarna {};
+      Kraken2 = final.callPackage ./kraken2 {};
     };};
 }
