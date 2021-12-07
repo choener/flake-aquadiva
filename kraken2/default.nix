@@ -1,7 +1,7 @@
 { lib, stdenv, fetchurl, fetchFromGitHub, bash, perl }:
 
 stdenv.mkDerivation rec {
-  name = "Kraken2";
+  name = "kraken2";
   version = "2.0.8-beta";
   src = fetchFromGitHub {
     owner = "DerrickWood";

@@ -74,13 +74,13 @@
       defaultApp = apps.fhs;
       packages = { inherit fhs;
                    inherit nextflow poseidon bonito;
-                   inherit (pkgs) ViennaRNA Kraken2;
+                   inherit (pkgs) ViennaRNA kraken2;
                  };
     }; # eachSystem
 
   in
     flake-utils.lib.eachDefaultSystem eachSystem // { overlay = final: prev: {
       ViennaRNA = final.callPackage ./viennarna {};
-      Kraken2 = final.callPackage ./kraken2 {};
+      kraken2 = final.callPackage ./kraken2 {};
     };};
 }
