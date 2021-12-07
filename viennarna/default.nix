@@ -31,6 +31,7 @@ stdenv.mkDerivation rec {
     license = "https://www.tbi.univie.ac.at/RNA/ViennaRNA/doc/html/index.html#license";
     maintainers = [  ];
     platforms = lib.platforms.linux;
+    mainProgram = "RNAfold";
   };
 }
 
