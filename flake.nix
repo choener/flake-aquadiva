@@ -28,7 +28,7 @@
       # fhs with things we need
       fhs = pkgs.buildFHSUserEnv {
         name = "fhs";
-        targetPkgs = p: [ p.jdk14 nextflow poseidon bonito p.ViennaRNA ];
+        targetPkgs = p: [ nextflow poseidon bonito p.ViennaRNA ];
       };
       ## TODO nextflow should actually be embedded within an FHS
       nextflow = pkgs.stdenv.mkDerivation {
@@ -74,7 +74,8 @@
       defaultApp = apps.fhs;
       packages = { inherit fhs;
                    inherit nextflow poseidon bonito;
-                   inherit (pkgs) ViennaRNA kraken2;
+                   inherit (pkgs) ViennaRNA;
+                   inherit (pkgs) kraken2 prepkraken2db;
                  };
     }; # eachSystem
 
@@ -82,6 +83,7 @@
     flake-utils.lib.eachDefaultSystem eachSystem // { overlay = final: prev: {
       ViennaRNA = final.callPackage ./viennarna {};
       kraken2 = final.callPackage ./kraken2 {};
+      prepkraken2db = final.callPackage ./kraken2/prepdb.nix {};
     };};
 }
 
