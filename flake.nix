@@ -67,6 +67,10 @@
           ${fhs}/bin/fhs
         '';
       }; # devShell
+      devShells."virusdb" = pkgs.stdenv.mkDerivation {
+        nativeBuildInputs = with pkgs; [ kraken2 prepkraken2db ];
+        name = "VirusDB";
+      };
       apps.fhs = { type = "app"; program = "${fhs}/bin/fhs"; };
       apps.nextflow = { type = "app"; program = "${nextflow}/bin/nextflow"; };
       apps.RNAfold = { type = "app"; program = "${pkgs.ViennaRNA}/bin/RNAfold"; };
