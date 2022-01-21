@@ -34,8 +34,12 @@ writeShellScriptBin "prepdb" ''
   T=$(${coreutils}/bin/nproc)
   echo "using $T cpu threads for building DB $1"
   # TODO this is for testing right now
+  echo "downloading taxonomy"
   ${kraken2}/bin/kraken2-build --threads $T --download-taxonomy --db $1
+  echo "downloading library viral"
+  echo `which rsync`
   ${kraken2}/bin/kraken2-build --threads $T --download-library viral --db $1
+  echo "building DB"
   ${kraken2}/bin/kraken2-build --threads $T --build --db $1
 ''
 
