@@ -97,6 +97,7 @@
         singularityRNAnue = pkgs.singularity-tools.buildImage {
           name = "RNAnue";
           contents = [ pkgs.RNAnue pkgs.ViennaRNA pkgs.segemehl ];
+          diskSize = 2048;
         };
         staticViennaRNA = pkgs.pkgsMusl.ViennaRNA;
       }; # packages
