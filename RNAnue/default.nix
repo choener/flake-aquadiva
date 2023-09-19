@@ -1,8 +1,8 @@
-{ stdenv, cmake, boost, range-v3, pkg-config, sdsl-lite, SeqAn3, ... }: src: let
+{ stdenv, cmake, boost172, range-v3, pkg-config, sdsl-lite, SeqAn3, ... }: src: let
 
 in stdenv.mkDerivation {
   name = "RNAnue";
-  nativeBuildInputs = [ cmake boost range-v3 sdsl-lite SeqAn3 ];
+  nativeBuildInputs = [ cmake boost172 range-v3 sdsl-lite SeqAn3 ];
   buildInputs = [ ];
   inherit src;
 
