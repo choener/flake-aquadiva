@@ -86,7 +86,7 @@
         inherit (pkgs) segemehl;
         dockerRNAnue = pkgs.dockerTools.buildImage {
           # The params.cfg file for RNAnue is under /share
-          name = "RNAnue with ViennaRNA";
+          name = "RNAnue";
           copyToRoot = pkgs.buildEnv {
             name = "image-root";
             paths = [ pkgs.RNAnue pkgs.ViennaRNA pkgs.segemehl ];
@@ -94,6 +94,11 @@
           };
           config.Cmd = [ "/bin/RNAnue" ];
         };
+        singularityRNAnue = pkgs.singularity-tools.buildImage {
+          name = "RNAnue";
+          contents = [ pkgs.RNAnue pkgs.ViennaRNA pkgs.segemehl ];
+        };
+        staticViennaRNA = pkgs.pkgsMusl.ViennaRNA;
       }; # packages
     }; # eachSystem 
 
