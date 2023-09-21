@@ -8,7 +8,7 @@
     #
     #nextflow = { url = github:nextflow-io/nextflow/archive/v20.10.0.tar.gz; flake = false; };
     #poseidon = { url = github:hoelzer/poseidon/archive/v1.0.1.tar.gz; flake = false; };
-    RNAnue = { url = github:Ibvt/RNAnue/v0.1.1; flake = false; };
+    RNAnue = { url = github:Ibvt/RNAnue/; flake = false; };
     SeqAn3 = { url = github:seqan/seqan3/3.0.2; flake = false; };
     sdsl-lite = { url = github:xxsds/sdsl-lite/v3.0.3; flake = false; };
   };
@@ -23,60 +23,18 @@
         inherit config;
         overlays = [ self.overlay inputs.devshell.overlays.default ];
       };
-      # fhs with things we need
-      #fhs = pkgs.buildFHSUserEnv {
-      #  name = "fhs";
-      #  targetPkgs = p: [ nextflow poseidon bonito p.ViennaRNA ];
-      #};
-      ### TODO nextflow should actually be embedded within an FHS
-      #nextflow = pkgs.stdenv.mkDerivation {
-      #  name = "nextflow";
-      #  src = inputs.nextflow;
-      #  configurePhase = "true";
-      #  buildPhase = "true";
-      #  installPhase = ''
-      #    mkdir -p $out/bin
-      #    cp -r nextflow modules $out
-      #    cd $out/bin
-      #    ln -s ../nextflow
-      #  '';
-      #};
-      ## TODO should depend on nextflow
-      #poseidon = pkgs.stdenv.mkDerivation {
-      #  name = "poseidon";
-      #  src = inputs.poseidon;
-      #  configurePhase = "true";
-      #  buildPhase = "true";
-      #  installPhase = ''
-      #    mkdir -p $out/bin
-      #    rm .gitignore
-      #    cp -r . $out
-      #    cd $out/bin
-      #    ln -s ../poseidon.nf poseidon
-      #  '';
-      #};
       bonito = pkgs.callPackage ./ont-bonito {};
 
     in rec {
-      #devShell = pkgs.stdenv.mkDerivation {
-      #  name = "AquaDiva";
-      #  nativeBuildInputs = [ fhs ];
-      #  shellHook = ''
-      #    ${fhs}/bin/fhs
-      #  '';
-      #}; # devShell
+      # Currently for debugging RNAnue.
       devShell = pkgs.devshell.mkShell {
-        devshell.packages = with pkgs; [ RNAnue ViennaRNA ];
+        devshell.packages = with pkgs; RNAnue.nativeBuildInputs ++ [ RNAnue ViennaRNA segemehl ];
       };
       devShells."virusdb" = pkgs.stdenv.mkDerivation {
         nativeBuildInputs = with pkgs; [ kraken2 prepkraken2db ];
         name = "VirusDB";
       };
-      #apps.fhs = { type = "app"; program = "${fhs}/bin/fhs"; };
-      #apps.nextflow = { type = "app"; program = "${nextflow}/bin/nextflow"; };
       apps.RNAfold = { type = "app"; program = "${pkgs.ViennaRNA}/bin/RNAfold"; };
-      # by default, we get the @fhs@ environment to play around in.
-      #defaultApp = apps.fhs;
       packages = {
         inherit (pkgs) ViennaRNA;
         inherit (pkgs) kraken2 prepkraken2db;
@@ -99,11 +57,11 @@
           contents = [ pkgs.RNAnue pkgs.ViennaRNA pkgs.segemehl ];
           diskSize = 2048;
         };
-        staticViennaRNA = pkgs.pkgsMusl.ViennaRNA;
       }; # packages
     }; # eachSystem 
 
   in
+    # Create the overlay of available software.
     flake-utils.lib.eachDefaultSystem eachSystem // { overlay = final: prev: {
       ViennaRNA = final.callPackage ./viennarna {};
       kraken2 = final.callPackage ./kraken2 {};
