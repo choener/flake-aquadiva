@@ -28,7 +28,11 @@
     in rec {
       # Currently for debugging RNAnue.
       devShell = pkgs.devshell.mkShell {
-        devshell.packages = with pkgs; RNAnue.nativeBuildInputs ++ [ RNAnue ViennaRNA segemehl ];
+        devshell.packages = with pkgs; RNAnue.nativeBuildInputs ++ [
+          # RNAnue 
+          ViennaRNA segemehl
+          vscode-extensions.ms-vscode.cpptools
+        ];
       };
       devShells."virusdb" = pkgs.stdenv.mkDerivation {
         nativeBuildInputs = with pkgs; [ kraken2 prepkraken2db ];
