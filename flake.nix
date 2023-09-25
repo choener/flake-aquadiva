@@ -31,7 +31,10 @@
         devshell.packages = with pkgs; RNAnue.nativeBuildInputs ++ [
           # RNAnue 
           ViennaRNA segemehl
-          vscode-extensions.ms-vscode.cpptools
+        ];
+        env = [
+          { name = "CPPTOOLS"; value = "${pkgs.vscode-extensions.ms-vscode.cpptools}"; }
+          { name = "LLDB"; value = "${pkgs.vscode-extensions.vadimcn.vscode-lldb}/share/vscode/extensions/vadimcn.vscode-lldb/adapter/codelldb"; }
         ];
       };
       devShells."virusdb" = pkgs.stdenv.mkDerivation {
