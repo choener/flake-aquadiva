@@ -49,6 +49,7 @@
         inherit (pkgs) SeqAn3;
         inherit (pkgs) sdsl-lite;
         inherit (pkgs) segemehl;
+        inherit (pkgs) mummer;
         dockerRNAnue = pkgs.dockerTools.buildImage {
           # The params.cfg file for RNAnue is under /share
           name = "RNAnue";
@@ -77,6 +78,7 @@
       SeqAn3 = (final.callPackage ./SeqAn3 {}) inputs.SeqAn3;
       sdsl-lite = (final.callPackage ./sdsl-lite {}) inputs.sdsl-lite;
       segemehl = final.callPackage ./segemehl {};
+      mummer = final.callPackage ./mummer {};
     };};
 }
 
